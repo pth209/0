@@ -200,6 +200,12 @@
         });
     }
 
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+        }).catch(err => {
+            console.error('Lỗi khi sao chép: ', err);
+        });
+    }
 </script>
 
 </body>

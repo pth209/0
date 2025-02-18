@@ -200,13 +200,6 @@
         });
     }
 
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Đã sao chép vào clipboard: ' + text);
-        }).catch(err => {
-            console.error('Lỗi khi sao chép: ', err);
-        });
-    }
 </script>
 
 </body>

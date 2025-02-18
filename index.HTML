@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển Đổi ALT Ảnh</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Ẩn cuộn */
+            background-color: #000; /* Màu nền tối */
+            position: relative; /* Để chứa chữ chạy khắp màn hình */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Chiều cao toàn màn hình */
+        }
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            overflow: hidden;
+        }
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: twinkle 1.5s infinite alternate; /* Thêm animation nhấp nháy */
+        }
+        @keyframes twinkle {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 1; }
+        }
+        .moving-text {
+            position: absolute;
+            font-size: 50px; /* Kích thước chữ */
+            color: #ffcc00; /* Màu sắc chữ */
+            white-space: nowrap;
+            animation: blink 0.5s step-start infinite; /* Thêm hiệu ứng nhấp nháy */
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; } /* Hiệu ứng nhấp nháy */
+        }
+        .container {
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.9); /* Nền trong suốt */
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #007bff; /* Viền cho khung */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative; /* Để chứa các thành phần */
+            z-index: 1; /* Đảm bảo khung nằm trên nền */
+        }
+        h2 {
+            text-align: center;
+            color: #007bff; /* Màu tiêu đề */
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-size: 16px;
+            position: relative; /* Để tạo hiệu ứng */
+            overflow: hidden; /* Ẩn phần thừa */
+            transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng chuyển đổi */
+        }
+        button:active {
+            transform: scale(0.95); /* Hiệu ứng khi nhấn */
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-left: 5px solid #007bff; /* Viền bên trái cho kết quả */
+        }
+        .copy-icon {
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 20px;
+            color: #007bff;
+            transition: transform 0.2s, color 0.2s;
+        }
+        .copy-icon:active {
+            transform: scale(1.2);
+            color: #0056b3;
+        }
+        #starField {
+            width: 500vw; /* Chiều rộng toàn bộ màn hình */
+            height: 500vh; /* Chiều cao toàn bộ màn hình */
+            position: absolute; /* Đặt vị trí tuyệt đối */
+            top: 0; /* Đặt ở vị trí trên cùng */
+            left: 0; /* Đặt ở vị trí bên trái */
+        }
+    </style>
+</head>
+<body>
+
+<div class="stars" id="starField"></div>
+
+<div class="moving-text" id="movingText">PTH</div> <!-- Dòng chữ chạy lung tung -->
+
+<div class="container">
+    <h2>Chuyển Đổi ALT Ảnh</h2>
+    <textarea id="inputText" placeholder="Nhập cụm từ ở đây..."></textarea>
+    <button onclick="convertText()">CONVERT</button>
+    <div id="resultContainer"></div>
+</div>
+
+<script>
+    // Tạo các ngôi sao
+    const starField = document.getElementById('starField');
+    const starCount = 100; // Số lượng ngôi sao
+
+    const colors = ['#ffcc00', '#ff6699', '#66ccff', '#ff33cc', '#ff007f', '#ff4500']; // Màu sắc cho các ngôi sao
+
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 6 + 2; // Kích thước ngôi sao từ 2px đến 8px
+        const x = Math.random() * window.innerWidth; // Vị trí x
+        const y = Math.random() * window.innerHeight; // Vị trí y
+
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${x}px`;
+        star.style.top = `${y}px`;
+        star.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; // Chọn màu ngẫu nhiên
+        star.style.animationDuration = `${Math.random() * 5 + 5}s`; // Thời gian di chuyển ngẫu nhiên
+
+        starField.appendChild(star);
+    }
+
+    function getRandomColor() {
+        const colors = ['#ff0000', '#ffcc00', '#0000ff', '#800080', '#ff69b4', '#ff7f50']; // Các màu cho chữ PTH
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function moveText() {
+        const movingText = document.getElementById('movingText');
+        const randomX = Math.random() * (window.innerWidth - 200); // 200 là chiều rộng của chữ
+        const randomY = Math.random() * (window.innerHeight - 50); // 50 là chiều cao của chữ
+
+        movingText.style.left = `${randomX}px`;
+        movingText.style.top = `${randomY}px`;
+        movingText.style.color = getRandomColor(); // Thay đổi màu chữ
+
+        setTimeout(moveText, 2000); // Di chuyển lại sau 2 giây
+    }
+
+    moveText(); // Bắt đầu di chuyển chữ
+
+    function convertText() {
+        const input = document.getElementById('inputText').value;
+        const lines = input.split('\n'); // Tách theo dòng
+        const resultContainer = document.getElementById('resultContainer');
+        resultContainer.innerHTML = ''; // Xóa kết quả cũ
+
+        lines.forEach(line => {
+            const result = line
+                .normalize('NFD') // Tách dấu
+                .replace(/[\u0300-\u036f]/g, '') // Xóa dấu
+                .replace(/đ/g, 'd') // Thay "đ" bằng "d"
+                .replace(/\s+/g, '-') // Thay khoảng trắng bằng dấu gạch ngang
+                .toLowerCase(); // Chuyển thành chữ thường
+
+            // Tạo phần tử hiển thị kết quả
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = `
+                <span>${result}</span>
+                <span class="copy-icon" onclick="copyToClipboard('${result}')">📋</span>
+            `;
+            resultContainer.appendChild(resultDiv);
+        });
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+        }).catch(err => {
+            console.error('Lỗi khi sao chép: ', err);
+        });
+    }
+</script>
+
+</body>
+</html>
